@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Toko Sembako • Landing Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#020617;
+      --accent:#facc15;
+      --accent-soft:#fde68a;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --danger:#fb7185;
+      --success:#22c55e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top, #1f2937 0, transparent 55%),
+        radial-gradient(circle at bottom, #020617 0, #000 65%);
+      color:var(--text);
+      padding:1.5rem;
+    }
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+    }
+    header{
+      text-align:center;
+      margin-bottom:1.5rem;
+    }
+    header h1{
+      font-size:1.8rem;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    header p{
+      color:var(--muted);
+      margin-top:.35rem;
+      font-size:.95rem;
+    }
+
+    .contact-strip{
+      margin:1rem auto 1.5rem;
+      padding:.75rem 1rem;
+      border-radius:.75rem;
+      background:rgba(15,23,42,.8);
+      border:1px solid rgba(148,163,184,.6);
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      justify-content:space-between;
+      align-items:center;
+      font-size:.9rem;
+    }
+    .contact-strip strong{color:var(--accent-soft);}
+    .contact-strip span{white-space:nowrap;}
+
+    .products{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:1rem;
+    }
+    .card{
+      background:var(--card);
+      border-radius:.9rem;
+      border:1px solid rgba(148,163,184,.35);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 18px 40px rgba(15,23,42,.7);
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 24px 60px rgba(15,23,42,.9);
+      border-color:var(--accent-soft);
+    }
+    .card-img{
+      position:relative;
+      padding-top:60%;
+      overflow:hidden;
+      background:#020617;
+    }
+    .card-img img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    .card-body{
+      padding:.75rem .9rem .9rem;
+      display:flex;
+      flex-direction:column;
+      gap:.35rem;
+      flex:1;
+    }
+    .card-title{
+      font-size:.95rem;
+      font-weight:600;
+    }
+    .card-price{
+      font-weight:700;
+      color:var(--accent-soft);
+      font-size:.95rem;
+    }
+    .card-note{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .card-actions{
+      margin-top:.35rem;
+      display:flex;
+      gap:.4rem;
+      flex-wrap:wrap;
+    }
+    button{
+      border:none;
+      outline:none;
+      font:inherit;
+      cursor:pointer;
+    }
+    .btn{
+      flex:1 1 48%;
+      border-radius:999px;
+      padding:.45rem .6rem;
+      font-size:.8rem;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.35rem;
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+      white-space:nowrap;
+    }
+    .btn-wa{
+      background:#22c55e;
+      color:#052e16;
+      box-shadow:0 6px 20px rgba(34,197,94,.4);
+    }
+    .btn-wa:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(34,197,94,.6);}
+    .btn-qr{
+      background:rgba(15,23,42,1);
+      color:var(--accent-soft);
+      border:1px solid rgba(250,204,21,.6);
+    }
+    .btn-qr:hover{transform:translateY(-1px);background:rgba(15,23,42,1);}
+    .btn small{font-size:.7rem;font-weight:500;opacity:.8;}
+
+    /* Modal QR */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.75);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+    }
+    .modal-backdrop.show{display:flex;}
+    .modal{
+      width:100%;
+      max-width:360px;
+      background:#020617;
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,.6);
+      box-shadow:0 28px 80px rgba(15,23,42,.9);
+      padding:1rem 1.1rem 1.2rem;
+      position:relative;
+    }
+    .modal h2{
+      font-size:1rem;
+      margin-bottom:.25rem;
+    }
+    .modal p{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-bottom:.5rem;
+    }
+    .modal-product{
+      font-size:.85rem;
+      margin-bottom:.5rem;
+    }
+    .modal-product strong{color:var(--accent-soft);}
+    .qr-box{
+      margin:.4rem auto .8rem;
+      padding:.6rem;
+      border-radius:.9rem;
+      background:radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      border:1px dashed rgba(148,163,184,.7);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:.35rem;
+    }
+    .qr-box img{
+      width:180px;
+      height:180px;
+      object-fit:contain;
+      border-radius:.75rem;
+      background:#fff;
+    }
+    .qr-label{
+      font-size:.75rem;
+      color:var(--muted);
+      text-align:center;
+    }
+    .bank-info{
+      font-size:.78rem;
+      background:rgba(15,23,42,1);
+      border-radius:.65rem;
+      border:1px solid rgba(148,163,184,.7);
+      padding:.5rem .6rem;
+      margin-bottom:.55rem;
+    }
+    .bank-info strong{color:var(--accent-soft);}
+    .modal-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.75rem;
+      font-size:.75rem;
+      color:var(--muted);
+    }
+    .modal-footer button{
+      padding:.35rem .7rem;
+      border-radius:999px;
+      font-size:.75rem;
+    }
+    .btn-close{
+      background:rgba(15,23,42,1);
+      color:var(--muted);
+      border:1px solid rgba(148,163,184,.6);
+    }
+    .btn-copy{
+      background:var(--accent);
+      color:#1f2937;
+      font-weight:600;
+    }
+
+    @media(max-width:600px){
+      body{padding:1rem;}
+      .contact-strip{flex-direction:column;align-items:flex-start;}
+      .card-actions{flex-direction:column;}
+      .btn{flex:1 1 auto;width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Toko Sembako Makmur</h1>
+      <p>Pesan via WhatsApp • Bayar pakai QRIS / transfer bank</p>
+    </header>
+
+    <!-- Strip info WA & Rekening -->
+    <div class="contact-strip" id="contactStrip">
+      <span>📞 WA: <strong id="waDisplay"></strong></span>
+      <span>🏦 Rek: <strong id="rekDisplay"></strong></span>
+    </div>
+
+    <!-- Daftar Produk -->
+    <div class="products" id="productList"></div>
+  </div>
+
+  <!-- Modal QR -->
+  <div class="modal-backdrop" id="qrModalBackdrop">
+    <div class="modal">
+      <h2>Bayar dengan QR</h2>
+      <p>Scan QR di bawah, lalu kirim bukti ke WhatsApp supaya pesanan diproses.</p>
+
+      <div class="modal-product" id="modalProductInfo"></div>
+
+      <div class="qr-box">
+        <img id="qrImage" src="" alt="QR Pembayaran">
+        <div class="qr-label">
+          Scan pakai aplikasi bank / e-wallet yang mendukung QRIS.
+        </div>
+      </div>
+
+      <div class="bank-info" id="modalBankInfo"></div>
+
+      <div class="modal-footer">
+        <span id="copyStatus">Klik salin untuk copy No. Rek</span>
+        <div>
+          <button class="btn-close" id="btnCloseModal">Tutup</button>
+          <button class="btn-copy" id="btnCopyRek">Salin Rekening</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ========= SETTING TOKO (EDIT DI SINI SAJA) ========= */
+    const SETTINGS = {
+      whatsappNumber: '6281234567890',                 // ganti ke no WA bro (format internasional)
+      bankName: 'BCA',                                 // contoh
+      accountNumber: '1234567890',                     // no rekening
+      accountHolder: 'Nama Pemilik Rekening',         // nama di rekening
+      qrImageUrl: 'https://via.placeholder.com/300x300.png?text=QR+Pembayaran' // URL gambar QR
+    };
+
+    // Daftar produk
+    const products = [
+      {
+        id: 'beras-5kg',
+        name: 'Beras Premium 5kg',
+        price: 65000,
+        img: 'https://via.placeholder.com/400x300.png?text=Beras+5kg'
+      },
+      {
+        id: 'minyak-2l',
+        name: 'Minyak Goreng 2L',
+        price: 32000,
+        img: 'https://via.placeholder.com/400x300.png?text=Minyak+2L'
+      },
+      {
+        id: 'gula-1kg',
+        name: 'Gula Pasir 1kg',
+        price: 14000,
+        img: 'https://via.placeholder.com/400x300.png?text=Gula+1kg'
+      },
+      {
+        id: 'mie-goreng',
+        name: 'Mie Goreng (1 Dus)',
+        price: 85000,
+        img: 'https://via.placeholder.com/400x300.png?text=Mie+Goreng'
+      }
+    ];
+
+    /* ========= HELPER ========= */
+    function formatRupiah(num){
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    function buildWaLink(product){
+      const base = 'https://wa.me/' + SETTINGS.whatsappNumber;
+      const text =
+        'Halo, saya mau pesan:\n' +
+        '- Produk: ' + product.name + '\n' +
+        '- Harga: ' + formatRupiah(product.price) + '\n' +
+        '- Qty   : 1\n\n' +
+        'Metode bayar: QR / Transfer.\n' +
+        'Nama saya: (isi nama di sini)\n\n' +
+        'Tolong konfirmasi stok & total ya.';
+      return base + '?text=' + encodeURIComponent(text);
+    }
+
+    /* ========= RENDER PRODUK ========= */
+    const productListEl = document.getElementById('productList');
+    const waDisplayEl   = document.getElementById('waDisplay');
+    const rekDisplayEl  = document.getElementById('rekDisplay');
+
+    function renderProducts(){
+      waDisplayEl.textContent  = '+' + SETTINGS.whatsappNumber;
+      rekDisplayEl.textContent = SETTINGS.bankName + ' • ' +
+                                 SETTINGS.accountNumber +
+                                 ' a/n ' + SETTINGS.accountHolder;
+
+      productListEl.innerHTML = '';
+      products.forEach(prod => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-img">
+            <img src="${prod.img}" alt="${prod.name}">
+          </div>
+          <div class="card-body">
+            <div class="card-title">${prod.name}</div>
+            <div class="card-price">${formatRupiah(prod.price)}</div>
+            <div class="card-note">
+              Kirim via WA untuk cek stok & ongkir.
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-wa" href="${buildWaLink(prod)}" target="_blank" rel="noopener">
+                💬 WhatsApp
+              </a>
+              <button class="btn btn-qr" data-id="${prod.id}">
+                📷 QR / Transfer<br><small>Bayar sekarang</small>
+              </button>
+            </div>
+          </div>
+        `;
+        productListEl.appendChild(card);
+      });
+
+      // event tombol QR
+      document.querySelectorAll('.btn-qr').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.getAttribute('data-id');
+          const prod = products.find(p=>p.id===id);
+          if(prod) openQrModal(prod);
+        });
+      });
+    }
+
+    /* ========= MODAL QR ========= */
+    const qrModalBackdrop = document.getElementById('qrModalBackdrop');
+    const qrImageEl       = document.getElementById('qrImage');
+    const modalProdInfoEl = document.getElementById('modalProductInfo');
+    const modalBankInfoEl = document.getElementById('modalBankInfo');
+    const btnCloseModal   = document.getElementById('btnCloseModal');
+    const btnCopyRek      = document.getElementById('btnCopyRek');
+    const copyStatusEl    = document.getElementById('copyStatus');
+
+    function openQrModal(product){
+      qrImageEl.src = SETTINGS.qrImageUrl;
+      modalProdInfoEl.innerHTML =
+        'Produk: <strong>' + product.name + '</strong><br>' +
+        'Harga: <strong>' + formatRupiah(product.price) + '</strong>';
+
+      modalBankInfoEl.innerHTML =
+        '<strong>' + SETTINGS.bankName + '</strong><br>' +
+        SETTINGS.accountNumber + '<br>' +
+        'a/n ' + SETTINGS.accountHolder;
+
+      copyStatusEl.textContent = 'Klik salin untuk copy No. Rek';
+      qrModalBackdrop.classList.add('show');
+    }
+
+    function closeQrModal(){
+      qrModalBackdrop.classList.remove('show');
+    }
+
+    btnCloseModal.addEventListener('click', closeQrModal);
+    qrModalBackdrop.addEventListener('click', (e)=>{
+      if(e.target === qrModalBackdrop) closeQrModal();
+    });
+
+    btnCopyRek.addEventListener('click', async ()=>{
+      const text = `${SETTINGS.bankName} - ${SETTINGS.accountNumber} a/n ${SETTINGS.accountHolder}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyStatusEl.textContent = '✅ No. Rek berhasil disalin';
+      }catch(err){
+        copyStatusEl.textContent = '❌ Gagal menyalin, salin manual ya';
+      }
+    });
+
+    // Init
+    renderProducts();
+    qrImageEl.src = SETTINGS.qrImageUrl;
+  </script>
+</body>
+</html>
